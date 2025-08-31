@@ -1,7 +1,7 @@
-
+﻿
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/src/lib/prisma'
-import { DAILY_LIMIT, ETA_MINUTES_PER_FAL, DEMO_USER_ID } from '@/src/lib/env'
+import { prisma } from '@/lib/prisma'
+import { DAILY_LIMIT, ETA_MINUTES_PER_FAL, DEMO_USER_ID } from '@/lib/env'
 
 export async function GET() {
   const list = await prisma.fal.findMany({
