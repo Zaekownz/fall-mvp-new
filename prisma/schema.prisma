@@ -1,0 +1,53 @@
+
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+enum Role { USER ADMIN }
+enum FalStatus { PENDING IN_REVIEW COMMENTED REJECTED }
+enum PaymentStatus { INITIATED PAID FAILED REFUNDED }
+enum Provider { IYZICO PAYTR }
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  gender       String?
+  birthDate    DateTime?
+  marital      String?
+  passwordHash String?
+  image        String?
+  role         Role     @default(USER)
+  credits      Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  falls        Fal[]
+  orders       Order[]
+}
+
+model Fal {
+  id          String     @id @default(cuid())
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String
+  title       String
+  note        String?
+  imageUrls   String[]
+  questions   String[]
+  status      FalStatus  @default(PENDING)
+  comment     String?
+  commentedBy String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  user          User          @relation(fields: [userId], references: [id])
+  userId        String
+  provider      Provider
+  amountTRY     Int
+  creditsBought Int
+  status        PaymentStatus @default(INITIATED)
+  externalId    String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
